@@ -12,6 +12,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.HashMap;
@@ -82,7 +83,7 @@ public class MessageListener {
             if (!"success".equals(decryptMessage)) {
                 decryptMessage = LocalDateTime.now().toString() + "\n" + decryptMessage + "\n";
                 try {
-                    FileWriter writer = new FileWriter("message.txt", true); // 追加模式
+                    FileWriter writer = new FileWriter("message.txt", StandardCharsets.UTF_8, true); // 追加模式
                     writer.write(decryptMessage);
                     writer.close();
                     System.out.println("存储消息:" + decryptMessage);
@@ -102,7 +103,7 @@ public class MessageListener {
             cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
             byte[] encryptedMessageBytes = Base64.getDecoder().decode(encryptedMessage);
             byte[] decryptedMessageBytes = cipher.doFinal(encryptedMessageBytes);
-            return new String(decryptedMessageBytes);
+            return new String(decryptedMessageBytes, StandardCharsets.UTF_8);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
